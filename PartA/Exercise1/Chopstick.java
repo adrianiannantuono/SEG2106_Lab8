@@ -1,8 +1,10 @@
+import java.lang.*;
 public class Chopstick {
 	private int ID;
 // hint: use a local variable to indicate whether the chopstick is free
 //                        (lying on the table), e.g.  private boolean free;
 	private boolean free;
+
 
 	Chopstick(int ID) {
 		  this.ID = ID;
@@ -10,22 +12,39 @@ public class Chopstick {
 	}
 
 	synchronized void take() {
-		try {
-			wait();
-		} catch (InterruptedException e) {
-			System.out.println("A");
+		try{
+			if(free){
+				free = false;
+				notifyAll();
+				System.out.println("Chopstick: " + getID() + "is taken");
+
+			}
+			else{
+				wait();
+			}
+
 		}
-		free = false;
+		catch(InterruptedException e){
+			System.out.println("Error 1");
+		}
 	}
 
 
-	synchronized void release() {
-		try {
-			notify();
-		} catch (IllegalMonitorStateException e) {
-			System.out.println("B");
+	synchronized void release(){
+		try{
+			if(!free){
+				free = true;
+				notifyAll();
+				System.out.println("Chopstick" + getID() + "is Free");
+			}
+			else{
+				wait();
+			}
 		}
-		free = true;
+		catch(InterruptedException e){
+			System.out.println("Error 2");
+		}
+		
 	}
 
 	public int getID() {
