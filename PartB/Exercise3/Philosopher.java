@@ -1,4 +1,3 @@
-import java.util.concurrent.*;
 public class Philosopher extends Thread {
 	private GraphicTable table;
 	private Chopstick left;
@@ -7,7 +6,6 @@ public class Philosopher extends Thread {
 	final int timeThink_max = 5000;
 	final int timeNextFork = 100;
 	final int timeEat_max = 5000;
-	private static Semaphore sem = new Semaphore(4);
 
 	Philosopher(int ID, GraphicTable table, Chopstick left, Chopstick right) {
 		this.ID = ID;
@@ -40,14 +38,9 @@ public class Philosopher extends Thread {
 			// Tell the GUI I am hungry...
 			table.isHungry(ID);
 
-			try {
-				// Let's try to get the left chopstick
-				System.out.println(getName()+" wants left chopstick");
-				sem.acquire();
-				left.take();
-			} catch(InterruptedException e) {
-				System.out.println(e);
-			}
+			// Let's try to get the left chopstick
+			System.out.println(getName()+" wants left chopstick");
+			left.take();
 
 			// Tell the GUI that I took the left chopstick
 			table.takeChopstick(ID, left.getID());
@@ -75,7 +68,6 @@ public class Philosopher extends Thread {
 			} catch(InterruptedException e) {
 				System.out.println(e);
 			}
-			sem.release();
 
 			// Ok, I am really full now
 			System.out.println(getName()+" finished eating");
@@ -92,7 +84,6 @@ public class Philosopher extends Thread {
 			table.releaseChopstick(ID, right.getID());
 			right.release();
 			System.out.println(getName()+" released right chopstick");
-
 
 		}
 	}
