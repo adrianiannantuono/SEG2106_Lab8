@@ -40,58 +40,56 @@ public class Philosopher extends Thread {
 			// Tell the GUI I am hungry...
 			table.isHungry(ID);
 
-			try {
+			if (sem.tryAcquire()) {
 				// Let's try to get the left chopstick
 				System.out.println(getName()+" wants left chopstick");
-				sem.acquire();
 				left.take();
-			} catch(InterruptedException e) {
-				System.out.println(e);
+				// Tell the GUI that I took the left chopstick
+				table.takeChopstick(ID, left.getID());
+				System.out.println(getName()+" got left chopstick");
+
+				// I'll wait a bit before I try to get the next chopstick (it's philosopher's etiquette)
+				try {
+					sleep(timeNextFork);
+				} catch(InterruptedException e) {
+					System.out.println(e);
+				}
+
+				// Ok, enough etiquette nonesense, now I need my right chopstick
+				System.out.println(getName()+" wants right chopstick");
+				right.take();
+
+				// Got it!
+				table.takeChopstick(ID, right.getID());
+				System.out.println(getName()+" got right chopstick");
+
+				// Sweet taste of steamed rice....
+				System.out.println(getName()+" eats");
+				try {
+					sleep((long)(Math.random()*timeEat_max));
+				} catch(InterruptedException e) {
+					System.out.println(e);
+				}
+				sem.release();
+
+				// Ok, I am really full now
+				System.out.println(getName()+" finished eating");
+
+				// I just realized I did not wash these chopsticks
+				// and the philosopher on my right is coming down with a flu
+
+				// I'll release the left chopstick
+				table.releaseChopstick(ID, left.getID());
+				left.release();
+				System.out.println(getName()+" released left chopstick");
+
+				// I'll release the right chopstick
+				table.releaseChopstick(ID, right.getID());
+				right.release();
+				System.out.println(getName()+" released right chopstick");
 			}
 
-			// Tell the GUI that I took the left chopstick
-			table.takeChopstick(ID, left.getID());
-			System.out.println(getName()+" got left chopstick");
 
-			// I'll wait a bit before I try to get the next chopstick (it's philosopher's etiquette)
-			try {
-				sleep(timeNextFork);
-			} catch(InterruptedException e) {
-				System.out.println(e);
-			}
-
-			// Ok, enough etiquette nonesense, now I need my right chopstick
-			System.out.println(getName()+" wants right chopstick");
-			right.take();
-
-			// Got it!
-			table.takeChopstick(ID, right.getID());
-			System.out.println(getName()+" got right chopstick");
-
-			// Sweet taste of steamed rice....
-			System.out.println(getName()+" eats");
-			try {
-				sleep((long)(Math.random()*timeEat_max));
-			} catch(InterruptedException e) {
-				System.out.println(e);
-			}
-			sem.release();
-
-			// Ok, I am really full now
-			System.out.println(getName()+" finished eating");
-
-			// I just realized I did not wash these chopsticks
-			// and the philosopher on my right is coming down with a flu
-
-			// I'll release the left chopstick
-			table.releaseChopstick(ID, left.getID());
-			left.release();
-			System.out.println(getName()+" released left chopstick");
-
-			// I'll release the right chopstick
-			table.releaseChopstick(ID, right.getID());
-			right.release();
-			System.out.println(getName()+" released right chopstick");
 
 
 		}
