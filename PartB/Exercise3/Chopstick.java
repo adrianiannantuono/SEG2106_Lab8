@@ -39,7 +39,7 @@ public class Chopstick {
 				System.out.println("Chopstick" + getID() + "is Free");
 			}
 			else{
-				wait();
+				wait(X);
 			}
 		}
 		catch(InterruptedException e){
