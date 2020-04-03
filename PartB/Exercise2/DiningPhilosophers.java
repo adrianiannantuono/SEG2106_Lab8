@@ -1,3 +1,4 @@
+import java.util.concurrent.*;
 public class DiningPhilosophers {
 
 	public static void main(String args[]) {
@@ -9,11 +10,13 @@ public class DiningPhilosophers {
 		Chopstick c3 = new Chopstick(3);
 		Chopstick c4 = new Chopstick(4);
 
-		Philosopher p0 = new Philosopher(0, table, c0, c4);
-		Philosopher p1 = new Philosopher(1, table, c1, c0);
-		Philosopher p2 = new Philosopher(2, table, c2, c1);
-		Philosopher p3 = new Philosopher(3, table, c3, c2);
-		Philosopher p4 = new Philosopher(4, table, c4, c3);
+		Semaphore sem = new Semaphore(10);
+
+		Philosopher p0 = new Philosopher(sem, 0, table, c0, c4);
+		Philosopher p1 = new Philosopher(sem, 1, table, c1, c0);
+		Philosopher p2 = new Philosopher(sem, 2, table, c2, c1);
+		Philosopher p3 = new Philosopher(sem, 3, table, c3, c2);
+		Philosopher p4 = new Philosopher(sem, 4, table, c4, c3);
 
 		p0.start();
 		p1.start();
