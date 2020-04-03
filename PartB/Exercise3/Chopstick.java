@@ -1,6 +1,7 @@
 import java.lang.*;
 public class Chopstick {
 	private int ID;
+	private long X = 2000;
 // hint: use a local variable to indicate whether the chopstick is free
 //                        (lying on the table), e.g.  private boolean free;
 	private boolean free;
@@ -20,7 +21,7 @@ public class Chopstick {
 
 			}
 			else{
-				wait();
+				wait(X);
 			}
 
 		}
